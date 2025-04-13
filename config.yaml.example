@@ -1,0 +1,23 @@
+# 数据库配置
+database:
+  host: localhost
+  port: 3306
+  user: root
+  password: password
+  dbname: test
+  charset: utf8mb4
+
+# 生成配置
+generate:
+  # 输出目录
+  output_dir: ./models
+  # 包名
+  package: models
+  # 要生成的表，为空表示所有表
+  tables: []
+  # 表前缀，会从生成的结构体名称中移除
+  table_prefix: ""
+  # 是否生成JSON标签
+  with_json_tag: true
+  # 是否生成数据库查询函数
+  with_query_functions: false 
