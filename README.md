@@ -10,6 +10,7 @@
 - 支持生成JSON标签
 - 支持自定义输出目录和包名
 - 支持移除表前缀
+- 支持 MySQL 和 ClickHouse 数据库
 
 ## 安装
 
@@ -26,6 +27,7 @@ go get github.com/yourusername/gen
 ```yaml
 # 数据库配置
 database:
+  type: mysql  # 数据库类型：mysql 或 clickhouse
   host: localhost
   port: 3306
   user: root
@@ -89,6 +91,7 @@ gen -v
 
 ### 数据库配置
 
+- `type`: 数据库类型，支持 mysql 和 clickhouse
 - `host`: 数据库服务器地址
 - `port`: 数据库端口
 - `user`: 数据库用户名

@@ -18,6 +18,7 @@ type Config struct {
 
 // DatabaseConfig 表示数据库连接配置
 type DatabaseConfig struct {
+	Type     string `yaml:"type"` // 数据库类型：mysql 或 clickhouse
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
 	User     string `yaml:"user"`
@@ -44,8 +45,14 @@ type GenerateConfig struct {
 
 // GetDSN 获取数据库连接字符串
 func (d *DatabaseConfig) GetDSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",
-		d.User, d.Password, d.Host, d.Port, d.DBName, d.Charset)
+	switch d.Type {
+	case "clickhouse":
+		return fmt.Sprintf("clickhouse://%s:%s@%s:%d/%s",
+			d.User, d.Password, d.Host, d.Port, d.DBName)
+	default: // mysql
+		return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",
+			d.User, d.Password, d.Host, d.Port, d.DBName, d.Charset)
+	}
 }
 
 // LoadConfig 从文件加载配置
@@ -68,6 +75,7 @@ func LoadConfig(filePath string) (*Config, error) {
 func DefaultConfig() *Config {
 	return &Config{
 		Database: DatabaseConfig{
+			Type:     "mysql",
 			Host:     "localhost",
 			Port:     3306,
 			User:     "root",

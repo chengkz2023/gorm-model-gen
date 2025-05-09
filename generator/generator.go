@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/yourusername/gen/config"
+	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -20,7 +21,16 @@ type Generator struct {
 
 // NewGenerator 创建一个新的生成器
 func NewGenerator(cfg *config.Config) (*Generator, error) {
-	db, err := gorm.Open(mysql.Open(cfg.Database.GetDSN()), &gorm.Config{})
+	var db *gorm.DB
+	var err error
+
+	switch cfg.Database.Type {
+	case "clickhouse":
+		db, err = gorm.Open(clickhouse.Open(cfg.Database.GetDSN()), &gorm.Config{})
+	default: // mysql
+		db, err = gorm.Open(mysql.Open(cfg.Database.GetDSN()), &gorm.Config{})
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("连接数据库失败: %w", err)
 	}
